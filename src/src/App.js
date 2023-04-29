@@ -109,13 +109,16 @@ export class ParentContainer extends React.Component {
                   'text':'0',
                   'operand_1':0,
                   'operand_2':0,
+                  'operator':'',
                   'is_on_ac':true,
                   'floating_point':false,
                   'is_negative':false,
                   'is_on_operand_1':true,
                   'is_on_operand_2':false,
+                  'caught_error':false,
                 };
     this.updateTextInput = this.updateTextInput.bind(this);
+    this.calculate = this.calculate.bind(this);
   }
 
   calculate(operand_1, operand_2, operator) {
@@ -131,6 +134,10 @@ export class ParentContainer extends React.Component {
             answer = parseFloat((operand_1 * operand_2).toFixed(10));
             break;
           case "÷":
+            if (operand_2 == 0) {
+              this.state.caught_error = true;
+              return 0;
+            }
             answer = parseFloat((operand_1 / operand_2).toFixed(10));
             break;
     }
@@ -140,6 +147,19 @@ export class ParentContainer extends React.Component {
   updateTextInput(text, id) {
     let new_state = JSON.parse(JSON.stringify(this.state))
     
+    if (new_state.caught_error) {
+      new_state.operand_1 = 0;
+      new_state.operand_2 = 0;
+      new_state.operator = '';
+      new_state.floating_point = false;
+      new_state.is_negative = false;
+      new_state.text = '0';
+      new_state.is_on_operand_2 = false;
+      new_state.is_on_operand_1 = true;
+      new_state.is_on_ac = true;
+      new_state.caught_error = false;
+    }
+
     if (new_state.is_on_ac) {
       if (id =='1') {
         new_state.text = '0';
@@ -252,11 +272,13 @@ export class ParentContainer extends React.Component {
         new_state.is_on_operand_2 = false;
         new_state.is_on_operand_1 = true;
         new_state.is_on_ac = true;
+        new_state.caught_error = false;
       }
     }
 
-    
-
+    if (this.state.caught_error) {
+      new_state.text = "ERROR";
+    }
     this.setState((state) => (new_state));
   }
 
