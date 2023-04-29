@@ -4,8 +4,6 @@ import './index.css';
 import * as app from './App';
 import reportWebVitals from './reportWebVitals';
 
-const list = ["Hi", "GoodBye", "Ajab", "God dammit!"];
-
 const root = ReactDOM.createRoot(document.getElementById('root_1'));
 root.render(
   <React.StrictMode>
